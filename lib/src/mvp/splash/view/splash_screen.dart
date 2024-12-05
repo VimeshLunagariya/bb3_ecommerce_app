@@ -7,6 +7,7 @@ import 'package:bb3_ecommerce_app/utilities/asset/asset_utilities.dart';
 import 'package:bb3_ecommerce_app/utilities/route/route_utilities.dart';
 import 'package:bb3_ecommerce_app/utilities/settings/local_cache_key.dart';
 import 'package:bb3_ecommerce_app/utilities/settings/variable_utilities.dart';
+import 'package:bb3_ecommerce_app/utilities/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,10 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      if (Core.isKeyboardOpen(context)) {
+        Core.hideKeyBoard();
+      }
+
       /// Initiate SpalshScreen For Identifire for the Route
       var globalProvider = Provider.of<GlobalProvider>(context, listen: false);
       globalProvider.isSplashScreen = true;
@@ -31,7 +36,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Timer to navigate to HomeScreen after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
-      VariableUtilities.preferences.setBool(LocalCacheKey.applicationLoginState, true);
+      VariableUtilities.preferences
+          .setBool(LocalCacheKey.applicationLoginState, true);
 
       /// Navigate to DashBoard Screen
       Navigator.pushReplacementNamed(context, RouteUtilities.dashBoardScreen);

@@ -5,3 +5,4 @@ export 'font/font_utilities.dart';
 export 'provider/provider_binding.dart';
 export 'route/routes.dart';
 export 'validator/validator.dart';
+export 'settings/settings.dart';

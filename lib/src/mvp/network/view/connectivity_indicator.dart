@@ -18,10 +18,12 @@ class ConnectivityIndicatorWidget extends StatefulWidget {
   const ConnectivityIndicatorWidget({super.key});
 
   @override
-  _ConnectivityIndicatorWidgetState createState() => _ConnectivityIndicatorWidgetState();
+  ConnectivityIndicatorWidgetState createState() =>
+      ConnectivityIndicatorWidgetState();
 }
 
-class _ConnectivityIndicatorWidgetState extends State<ConnectivityIndicatorWidget> {
+class ConnectivityIndicatorWidgetState
+    extends State<ConnectivityIndicatorWidget> {
   Color color = Colors.white;
   double width = 20;
   double pos = 16;
@@ -51,7 +53,9 @@ class _ConnectivityIndicatorWidgetState extends State<ConnectivityIndicatorWidge
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [Image.asset(AssetUtilities.logoPng, height: 100, width: 100)],
+                children: [
+                  Image.asset(AssetUtilities.logoPng, height: 100, width: 100)
+                ],
               )
             ],
           );
@@ -90,7 +94,8 @@ class _ConnectivityIndicatorWidgetState extends State<ConnectivityIndicatorWidge
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GlobalProvider>(builder: (_, GlobalProvider globalProvider, __) {
+    return Consumer<GlobalProvider>(
+        builder: (_, GlobalProvider globalProvider, __) {
       return SafeArea(
         bottom: false,
         child: Container(
@@ -130,7 +135,8 @@ class _ConnectivityIndicatorWidgetState extends State<ConnectivityIndicatorWidge
 ///
 /// Should be initialized to set the initial connectivity state.
 ///
-typedef ConnectivityCallback = Function(List<ConnectivityResult> state, bool isConnected);
+typedef ConnectivityCallback = Function(
+    List<ConnectivityResult> state, bool isConnected);
 
 ///
 class ConnectivityService {
