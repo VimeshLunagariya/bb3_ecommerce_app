@@ -129,7 +129,7 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
                           ],
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 24.h),
                       searchProvider.searchTextController.text.isEmpty
                           ? Column(
                               children: [

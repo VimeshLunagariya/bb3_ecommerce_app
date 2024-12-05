@@ -79,68 +79,41 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin, 
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // CarouselSlider Widget
-                      Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          CarouselSlider(
-                            options: CarouselOptions(
-                              height: 220.0,
-                              viewportFraction: 1,
-                              autoPlay: true,
-                              autoPlayInterval: const Duration(seconds: 3),
-                              onPageChanged: (index, reason) {
-                                homeProvider.currentPage = index;
-                              },
-                            ),
-                            items: homeProvider.carouselSliderImages.map(
-                              (e) {
-                                return Builder(
-                                  builder: (BuildContext context) {
-                                    return Center(
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width - 20,
-                                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                                        decoration: BoxDecoration(
-                                            color: VariableUtilities.theme.blackColor,
-                                            border: Border.all(color: VariableUtilities.theme.whiteColor),
-                                            borderRadius: const BorderRadius.all(Radius.circular(10))),
-                                        child: ClipRRect(
-                                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                          child: Image(
-                                            image: AssetImage(e),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: 220.0,
+                          viewportFraction: 1,
+                          autoPlay: true,
+                          autoPlayInterval: const Duration(seconds: 3),
+                          onPageChanged: (index, reason) {
+                            homeProvider.currentPage = index;
+                          },
+                        ),
+                        items: homeProvider.carouselSliderImages.map(
+                          (e) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Center(
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width - 20,
+                                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                                    decoration: BoxDecoration(
+                                        color: VariableUtilities.theme.blackColor,
+                                        border: Border.all(color: VariableUtilities.theme.whiteColor),
+                                        borderRadius: const BorderRadius.all(Radius.circular(10))),
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                      child: Image(
+                                        image: AssetImage(e),
+                                        fit: BoxFit.cover,
                                       ),
-                                    );
-                                  },
+                                    ),
+                                  ),
                                 );
                               },
-                            ).toList(),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: SizedBox(
-                              height: 15,
-                              child: ListView.builder(
-                                padding: EdgeInsets.all(0),
-                                itemCount: homeProvider.carouselSliderImages.length,
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 2),
-                                    child: CircleAvatar(
-                                      maxRadius: 4,
-                                      backgroundColor: homeProvider.currentPage == index ? Color(0XFFEAA5B7) : Color(0XFFEAA5B7).withOpacity(0.30),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          )
-                        ],
+                            );
+                          },
+                        ).toList(),
                       ),
                       SizedBox(height: 6),
                       //  Shop By Brand Widget

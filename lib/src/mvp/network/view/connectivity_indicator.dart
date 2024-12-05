@@ -34,7 +34,6 @@ class _ConnectivityIndicatorWidgetState extends State<ConnectivityIndicatorWidge
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       ConnectivityService((result, isOnline) async {
         // NetworkManager().handleConnectionManager(result, isOnline);
-
         Timer(const Duration(seconds: 2), () {
           // hideStatus();
         });
