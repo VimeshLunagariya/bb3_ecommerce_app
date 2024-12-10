@@ -62,10 +62,10 @@ class SearchProvider extends ChangeNotifier {
   }
 
   // List of selected brands for filtering
-  List<BrandElement> _allBrandList = [];
-  List<BrandElement> get allBrandList => _allBrandList;
-  set allBrandList(List<BrandElement> val) {
-    _allBrandList = val;
+  List<BrandElement> _selectedBrandList = [];
+  List<BrandElement> get selectedBrandList => _selectedBrandList;
+  set selectedBrandList(List<BrandElement> val) {
+    _selectedBrandList = val;
     notifyListeners();
   }
 
@@ -87,10 +87,10 @@ class SearchProvider extends ChangeNotifier {
 
   // Adds or removes a brand from the selected brand list
   void onBrandSelectAndDeSelect(BrandElement brandElement) {
-    if (allBrandList.contains(brandElement)) {
-      allBrandList.removeWhere((val) => val == brandElement);
+    if (selectedBrandList.contains(brandElement)) {
+      selectedBrandList.removeWhere((val) => val == brandElement);
     } else {
-      allBrandList.add(brandElement);
+      selectedBrandList.add(brandElement);
     }
     notifyListeners();
   }
@@ -223,9 +223,9 @@ class SearchProvider extends ChangeNotifier {
 
     // Prepare API parameters based on filters and search input
     Map<String, dynamic> params = {'q': searchTextController.text};
-    if (allBrandList.isNotEmpty) {
+    if (selectedBrandList.isNotEmpty) {
       // Add selected brands to the parameters after formatting
-      params.addAll({'brands': allBrandList.map((e) => e.name).toList().join(",").replaceAll(" ", '-').toLowerCase()});
+      params.addAll({'brands': selectedBrandList.map((e) => e.name).toList().join(",").replaceAll(" ", '-').toLowerCase()});
     }
     if (selectedAttributes.isNotEmpty) {
       Map<String, dynamic> json = {};
@@ -269,9 +269,11 @@ class SearchProvider extends ChangeNotifier {
           } else {
             if (pageNumberSearchByFilter != null) {
               searchCardData = resposne;
+              allBrandsList = List.from(resposne.left.data!.brands ?? []);
             } else if (searchValue == searchTextController.text) {
               resposne.fold((l) {
                 searchCardData.left.data!.products!.addAll(l.data!.products ?? []);
+                allBrandsList = List.from(searchCardData.left.data!.brands ?? []);
                 if ((l.data!.brands ?? []).isEmpty) {
                   searchCardData.left.data!.brands!.clear();
                 }
@@ -283,6 +285,7 @@ class SearchProvider extends ChangeNotifier {
               }, (r) {});
             } else {
               searchCardData = resposne;
+              allBrandsList = List.from(resposne.left.data!.brands ?? []);
             }
             isVisibleLoadingIndicator = false;
           }
@@ -303,6 +306,50 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  // Brand Filter A-Z
+  bool _isFilterAtoZ = false;
+  bool get isFilterAtoZ => _isFilterAtoZ;
+  set isFilterAtoZ(bool val) {
+    _isFilterAtoZ = val;
+    notifyListeners(); // Notify UI listeners of data changes
+  }
+
+  // All Brands List
+  List<BrandElement> _allBrandsList = [];
+  List<BrandElement> get allBrandsList => _allBrandsList;
+  set allBrandsList(List<BrandElement> val) {
+    _allBrandsList = val;
+    notifyListeners(); // Notify UI listeners of data changes
+  }
+
+  sortFilterAtoZ() {
+    if (searchInstrumentsList.isEmpty) {
+      if (searchCardData.isLeft) {
+        if (searchCardData.left.data != null) {
+          searchCardData.left.data!.brands!.sort((a, b) => a.name!.compareTo(b.name!));
+          notifyListeners();
+        }
+      }
+    } else {
+      searchInstrumentsList.sort((a, b) => a.name!.compareTo(b.name!));
+      notifyListeners();
+    }
+  }
+
+  sortFilterRelevance() {
+    if (searchInstrumentsList.isEmpty) {
+      if (searchCardData.isLeft) {
+        if (searchCardData.left.data != null) {
+          searchCardData.left.data!.brands = List.from(allBrandsList);
+          notifyListeners();
+        }
+      }
+    } else {
+      searchInstrumentsList = List.from(allBrandsList);
+      notifyListeners();
+    }
+  }
+
   // Manage a list of instruments for brand search
   List<BrandElement> _searchInstrumentsList = [];
   List<BrandElement> get searchInstrumentsList => _searchInstrumentsList;
@@ -312,15 +359,19 @@ class SearchProvider extends ChangeNotifier {
   }
 
   // Search brands by name based on input
-  void searchBrand(String instrument) {
-    if (instrument.isEmpty) {
+  void searchBrand(String searchKeyword) {
+    if (searchKeyword.isEmpty) {
       searchInstrumentsList = []; // Clear search list if input is empty
       return;
     }
 
     if (searchCardData.isLeft) {
       // Filter brands containing the search keyword
-      searchInstrumentsList = searchCardData.left.data!.brands!.where((val) => val.name!.contains(instrument)).toList();
+      searchInstrumentsList.clear();
+
+      searchInstrumentsList = searchCardData.left.data!.brands!.where((val) {
+        return val.name!.contains(searchKeyword);
+      }).toList();
     }
     notifyListeners(); // Notify listeners of the updated search list
   }
@@ -328,7 +379,7 @@ class SearchProvider extends ChangeNotifier {
   // Clear all applied filters
   clearAllFilter() {
     selectRatingValue = -1;
-    allBrandList = [];
+    selectedBrandList = [];
     selectedAttributes.clear();
     selectedValues.clear();
     selectedPriceRange = PriceRange(minPrice: -1, maxPrice: -1);

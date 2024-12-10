@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 ///SearchInputField
 class SearchInputField extends StatelessWidget {
   ///SearchInputField Constructor
-  const SearchInputField({required this.searchController, this.suffixIcon, this.autoFocus = true, this.onChanged, super.key});
+  const SearchInputField({required this.searchController, this.suffixIcon, this.autoFocus = true, this.onChanged, super.key, this.hintText = 'Search', this.fillColor, this.isDense = false});
 
   ///Search Controller
   final TextEditingController searchController;
@@ -16,8 +16,17 @@ class SearchInputField extends StatelessWidget {
   //AutoFoucs
   final bool autoFocus;
 
+  //IsDense
+  final bool isDense;
+
   ///Suffix icon
   final Widget? suffixIcon;
+
+  ///Hint Text
+  final String hintText;
+
+  ///Fill Color
+  final Color? fillColor;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +34,8 @@ class SearchInputField extends StatelessWidget {
       // height: 40,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        color: VariableUtilities.theme.whiteColor,
+        color: fillColor ?? VariableUtilities.theme.whiteColor,
+        border: fillColor != null ? Border.all(color: Colors.grey.withOpacity(0.4)) : null,
       ),
 
       child: Padding(
@@ -45,9 +55,9 @@ class SearchInputField extends StatelessWidget {
                   cursorColor: VariableUtilities.theme.color7C7C7C,
                   style: FontUtilities.h10(fontColor: VariableUtilities.theme.color7C7C7C, fontWeight: FWT.semiBold),
                   decoration: InputDecoration(
-                    hintText: 'Search',
+                    isDense: isDense,
+                    hintText: hintText,
                     hintStyle: FontUtilities.h10(fontColor: VariableUtilities.theme.color7C7C7C, fontWeight: FWT.medium),
-                    isDense: true,
                     focusedBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
                     enabledBorder: const UnderlineInputBorder(borderSide: BorderSide.none),
                   ),

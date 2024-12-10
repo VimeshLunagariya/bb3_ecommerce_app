@@ -19,8 +19,7 @@ class SearchScreen extends StatefulWidget {
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen>
-    with TickerProviderStateMixin {
+class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMixin {
   // Timer to debounce search input.
   Timer? _debounce;
   ScrollController scrollController = ScrollController();
@@ -30,14 +29,12 @@ class _SearchScreenState extends State<SearchScreen>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final searchProvider =
-          Provider.of<SearchProvider>(context, listen: false);
+      final searchProvider = Provider.of<SearchProvider>(context, listen: false);
       searchProvider.reSetDataForSearchScreen();
 
       // Add a listener to load more data when reaching the bottom of the list.
       scrollController.addListener(() async {
-        if (scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent) {
+        if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
           searchProvider.callSearchCardApi(context);
         }
       });
@@ -61,8 +58,7 @@ class _SearchScreenState extends State<SearchScreen>
             Core.hideKeyBoard();
           }
         },
-        child: Consumer<SearchProvider>(
-            builder: (_, SearchProvider searchProvider, __) {
+        child: Consumer<SearchProvider>(builder: (_, SearchProvider searchProvider, __) {
           return Stack(
             children: [
               // AppBar BG
@@ -84,9 +80,7 @@ class _SearchScreenState extends State<SearchScreen>
                                   onTap: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Icon(Icons.arrow_back,
-                                      color: VariableUtilities.theme.whiteColor,
-                                      size: 25)),
+                                  child: Icon(Icons.arrow_back, color: VariableUtilities.theme.whiteColor, size: 25)),
                               const SizedBox(width: 5),
                               // SearchBar
                               Expanded(
@@ -97,56 +91,43 @@ class _SearchScreenState extends State<SearchScreen>
                                         _debounce?.cancel();
                                       }
 
-                                      _debounce = Timer(
-                                          const Duration(milliseconds: 500),
-                                          () {
+                                      _debounce = Timer(const Duration(milliseconds: 500), () {
                                         if (text.length >= 2) {
-                                          searchProvider.isFetchingFromAPI =
-                                              true;
-                                          searchProvider
-                                              .callSearchCardApi(context);
+                                          searchProvider.isFetchingFromAPI = true;
+                                          searchProvider.callSearchCardApi(context);
                                         } else {
-                                          searchProvider.isFetchingFromAPI =
-                                              false;
+                                          searchProvider.isFetchingFromAPI = false;
                                         }
                                       });
                                     }
                                   },
-                                  suffixIcon: searchProvider
-                                          .searchTextController.text.isNotEmpty
+                                  suffixIcon: searchProvider.searchTextController.text.isNotEmpty
                                       ? GestureDetector(
                                           onTap: () {
-                                            if (searchProvider
-                                                .isFetchingFromAPI) {
-                                              searchProvider.isFetchingFromAPI =
-                                                  false;
-                                              searchProvider
-                                                  .searchTextController
-                                                  .clear();
+                                            if (searchProvider.isFetchingFromAPI) {
+                                              searchProvider.isFetchingFromAPI = false;
+                                              searchProvider.searchTextController.clear();
                                             }
                                           },
                                           child: Icon(
                                             Icons.cancel,
-                                            color: VariableUtilities
-                                                .theme.color7C7C7C,
+                                            color: VariableUtilities.theme.color7C7C7C,
                                           ),
                                         )
                                       : const SizedBox(),
-                                  searchController:
-                                      searchProvider.searchTextController,
+                                  searchController: searchProvider.searchTextController,
                                 ),
                               ),
                               const SizedBox(width: 5),
                               // Filter Button
                               GestureDetector(
                                   onTap: () {
-                                    if (searchProvider
-                                            .searchTextController.text.length >=
-                                        2) {
+                                    if (searchProvider.searchTextController.text.length >= 2) {
                                       if (Core.isKeyboardOpen(context)) {
                                         Core.hideKeyBoard();
                                       }
                                       showModalBottomSheet(
+                                        isScrollControlled: true,
                                         context: context,
                                         builder: (builder) {
                                           return const FilterBottomSheetWidget();
@@ -155,12 +136,7 @@ class _SearchScreenState extends State<SearchScreen>
                                     }
                                   },
                                   child: Icon(Icons.filter_list_rounded,
-                                      color: searchProvider.searchTextController
-                                                  .text.length >=
-                                              2
-                                          ? VariableUtilities.theme.whiteColor
-                                          : VariableUtilities.theme.whiteColor
-                                              .withOpacity(0.6),
+                                      color: searchProvider.searchTextController.text.length >= 2 ? VariableUtilities.theme.whiteColor : VariableUtilities.theme.whiteColor.withOpacity(0.6),
                                       size: 25)),
                             ],
                           ),
@@ -173,76 +149,54 @@ class _SearchScreenState extends State<SearchScreen>
                                   // Placeholder text when the search bar is empty
                                   Text(
                                     'Search for "Routines", "Brands", "Skin Care", ETC...',
-                                    style: FontUtilities.h10(
-                                        fontWeight: FWT.medium),
+                                    style: FontUtilities.h10(fontWeight: FWT.medium),
                                   ),
                                 ],
                               )
                             : searchProvider.searchCardData.isLeft
-                                ? searchProvider.searchCardData.left.data!
-                                        .products!.isEmpty
+                                ? searchProvider.searchCardData.left.data!.products!.isEmpty
                                     ? Expanded(
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             // Display message if no products are found for the search term
                                             Text(
                                               'No Product Found For This Search!',
-                                              style: FontUtilities.h10(
-                                                  fontWeight: FWT.semiBold),
+                                              style: FontUtilities.h10(fontWeight: FWT.semiBold),
                                             ),
                                           ],
                                         ),
                                       )
                                     : Expanded(
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 12),
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                                           child: SingleChildScrollView(
                                             // Scroll controller for dynamic scrolling
                                             controller: scrollController,
                                             child: Column(
                                               children: [
                                                 GridView.builder(
-                                                  gridDelegate:
-                                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                                     crossAxisCount: 2,
                                                     childAspectRatio: 0.65,
                                                     crossAxisSpacing: 8,
                                                     mainAxisSpacing: 8,
                                                   ),
-                                                  physics:
-                                                      const NeverScrollableScrollPhysics(),
+                                                  physics: const NeverScrollableScrollPhysics(),
                                                   shrinkWrap: true,
-                                                  itemCount: searchProvider
-                                                      .searchCardData
-                                                      .left
-                                                      .data!
-                                                      .products!
-                                                      .length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    var reviews = searchProvider
-                                                        .searchCardData
-                                                        .left
-                                                        .data!
-                                                        .products![index]
-                                                        .reviews;
+                                                  itemCount: searchProvider.searchCardData.left.data!.products!.length,
+                                                  itemBuilder: (context, index) {
+                                                    var reviews = searchProvider.searchCardData.left.data!.products![index].reviews;
 
                                                     // Calculate the average rating of the product
                                                     double averageRating = 0.0;
 
-                                                    if (reviews != null &&
-                                                        reviews.isNotEmpty) {
+                                                    if (reviews != null && reviews.isNotEmpty) {
                                                       averageRating = reviews
                                                               // Extract ratings
-                                                              .map((e) =>
-                                                                  e.rating!)
-                                                              .reduce((a, b) =>
-                                                                  a + b) /
+                                                              .map((e) => e.rating!)
+                                                              .reduce((a, b) => a + b) /
                                                           // Calculate sum and divide by count
                                                           reviews.length;
                                                     } else {
@@ -253,166 +207,81 @@ class _SearchScreenState extends State<SearchScreen>
                                                     // Grid item widget
                                                     return Container(
                                                       decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.10)),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
+                                                        border: Border.all(color: Colors.black.withOpacity(0.10)),
+                                                        borderRadius: BorderRadius.circular(12),
                                                       ),
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal: 6),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 6),
                                                         child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
                                                           children: [
                                                             Expanded(
                                                               // Image takes 2 parts of the space
                                                               flex: 2,
-                                                              child:
-                                                                  CachedNetworkImage(
-                                                                imageUrl:
-                                                                    '${AssetUtilities.liveImageUrlPrefix}${searchProvider.searchCardData.left.data!.products![index].thumbnail!}',
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                placeholder:
-                                                                    (_, __) {
+                                                              child: CachedNetworkImage(
+                                                                imageUrl: '${AssetUtilities.liveImageUrlPrefix}${searchProvider.searchCardData.left.data!.products![index].thumbnail!}',
+                                                                fit: BoxFit.cover,
+                                                                placeholder: (_, __) {
                                                                   // Placeholder widget while the image is loading
                                                                   return Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .center,
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
-                                                                      Image.asset(
-                                                                          AssetUtilities
-                                                                              .logoPng,
-                                                                          height:
-                                                                              100,
-                                                                          width:
-                                                                              100),
+                                                                      Image.asset(AssetUtilities.logoPng, height: 100, width: 100),
                                                                     ],
                                                                   );
                                                                 },
-                                                                errorWidget: (_,
-                                                                    __, ___) {
+                                                                errorWidget: (_, __, ___) {
                                                                   // Fallback widget if the image fails to load
                                                                   return const Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .center,
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Icon(
-                                                                          Icons
-                                                                              .error,
-                                                                          color:
-                                                                              Colors.black54)
-                                                                    ],
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [Icon(Icons.error, color: Colors.black54)],
                                                                   );
                                                                 },
                                                               ),
                                                             ),
-                                                            const SizedBox(
-                                                                height: 10),
+                                                            const SizedBox(height: 10),
                                                             Expanded(
                                                               // Product details take 2 parts of the space
                                                               flex: 2,
                                                               child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: [
-                                                                  const SizedBox(
-                                                                      height:
-                                                                          10),
+                                                                  const SizedBox(height: 10),
                                                                   // Product title
                                                                   Text(
-                                                                    searchProvider
-                                                                            .searchCardData
-                                                                            .left
-                                                                            .data!
-                                                                            .products![index]
-                                                                            .title ??
-                                                                        'Unknown Product',
+                                                                    searchProvider.searchCardData.left.data!.products![index].title ?? 'Unknown Product',
                                                                     maxLines: 2,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: FontUtilities.h12(
-                                                                        fontWeight:
-                                                                            FWT.medium),
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    style: FontUtilities.h12(fontWeight: FWT.medium),
                                                                   ),
-                                                                  const SizedBox(
-                                                                      height:
-                                                                          5),
+                                                                  const SizedBox(height: 5),
                                                                   // Rating widget
                                                                   RatingStars(
-                                                                    axis: Axis
-                                                                        .horizontal,
-                                                                    value:
-                                                                        averageRating,
-                                                                    onValueChanged:
-                                                                        (v) {},
-                                                                    starCount:
-                                                                        5,
-                                                                    starSize:
-                                                                        20,
-                                                                    valueLabelRadius:
-                                                                        10,
+                                                                    axis: Axis.horizontal,
+                                                                    value: averageRating,
+                                                                    onValueChanged: (v) {},
+                                                                    starCount: 5,
+                                                                    starSize: 20,
+                                                                    valueLabelRadius: 10,
                                                                     maxValue: 5,
-                                                                    starSpacing:
-                                                                        2,
-                                                                    maxValueVisibility:
-                                                                        true,
-                                                                    valueLabelVisibility:
-                                                                        false,
-                                                                    animationDuration:
-                                                                        const Duration(
-                                                                            milliseconds:
-                                                                                1000),
-                                                                    valueLabelPadding: const EdgeInsets
-                                                                        .symmetric(
-                                                                        vertical:
-                                                                            1,
-                                                                        horizontal:
-                                                                            8),
-                                                                    valueLabelMargin:
-                                                                        const EdgeInsets
-                                                                            .only(
-                                                                            right:
-                                                                                8),
-                                                                    starOffColor:
-                                                                        const Color(
-                                                                            0xffe7e8ea),
-                                                                    starColor:
-                                                                        Colors
-                                                                            .amber,
+                                                                    starSpacing: 2,
+                                                                    maxValueVisibility: true,
+                                                                    valueLabelVisibility: false,
+                                                                    animationDuration: const Duration(milliseconds: 1000),
+                                                                    valueLabelPadding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+                                                                    valueLabelMargin: const EdgeInsets.only(right: 8),
+                                                                    starOffColor: const Color(0xffe7e8ea),
+                                                                    starColor: Colors.amber,
                                                                   ),
-                                                                  const SizedBox(
-                                                                      height:
-                                                                          5),
+                                                                  const SizedBox(height: 5),
                                                                   // Product price
                                                                   Text(
                                                                     'Rs. ${searchProvider.searchCardData.left.data!.products![index].priceStart}',
-                                                                    style: FontUtilities.h13(
-                                                                        fontWeight:
-                                                                            FWT.bold),
+                                                                    style: FontUtilities.h13(fontWeight: FWT.bold),
                                                                   ),
                                                                 ],
                                                               ),
@@ -425,22 +294,15 @@ class _SearchScreenState extends State<SearchScreen>
                                                 ),
                                                 // Loading indicator for infinite scroll
                                                 Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     Visibility(
-                                                      visible: searchProvider
-                                                          .isVisibleLoadingIndicator,
+                                                      visible: searchProvider.isVisibleLoadingIndicator,
                                                       child: Column(
                                                         children: [
-                                                          const SizedBox(
-                                                              height: 20),
-                                                          CircularProgressIndicator(
-                                                              color: VariableUtilities
-                                                                  .theme
-                                                                  .primaryColor),
+                                                          const SizedBox(height: 20),
+                                                          CircularProgressIndicator(color: VariableUtilities.theme.primaryColor),
                                                         ],
                                                       ),
                                                     ),
@@ -458,24 +320,20 @@ class _SearchScreenState extends State<SearchScreen>
                                           padding: const EdgeInsets.all(12),
                                           // Placeholder for shimmer effect
                                           child: GridView.builder(
-                                            gridDelegate:
-                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 2,
                                               childAspectRatio: 0.65,
                                               crossAxisSpacing: 8,
                                               mainAxisSpacing: 8,
                                             ),
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
+                                            physics: const NeverScrollableScrollPhysics(),
                                             shrinkWrap: true,
                                             itemCount: 6,
                                             itemBuilder: (context, index) {
                                               return const Padding(
-                                                padding:
-                                                    EdgeInsets.only(bottom: 8),
+                                                padding: EdgeInsets.only(bottom: 8),
                                                 // Shimmer effect widget
-                                                child:
-                                                    SearchProductListShimmerEffect(),
+                                                child: SearchProductListShimmerEffect(),
                                               );
                                             },
                                           ),
@@ -488,15 +346,12 @@ class _SearchScreenState extends State<SearchScreen>
                                           Text(
                                             'No products found!',
                                             textAlign: TextAlign.center,
-                                            style: FontUtilities.h10(
-                                                fontWeight: FWT.medium),
+                                            style: FontUtilities.h10(fontWeight: FWT.medium),
                                           ),
                                           Text(
                                             'for the keyword: "${searchProvider.searchTextController.text}"',
                                             textAlign: TextAlign.center,
-                                            style: FontUtilities.h12(
-                                                fontWeight: FWT.semiBold,
-                                                fontColor: Colors.grey),
+                                            style: FontUtilities.h12(fontWeight: FWT.semiBold, fontColor: Colors.grey),
                                           ),
                                         ],
                                       ),
