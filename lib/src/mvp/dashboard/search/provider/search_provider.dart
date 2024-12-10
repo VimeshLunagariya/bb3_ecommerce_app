@@ -46,7 +46,7 @@ class SearchProvider extends ChangeNotifier {
   }
 
   // Filter selection criteria (e.g., rating, price, etc.)
-  String _filterSelctionName = 'rating';
+  String _filterSelctionName = 'sortBy';
   String get filterSelctionName => _filterSelctionName;
   set filterSelctionName(String value) {
     _filterSelctionName = value;
@@ -58,6 +58,14 @@ class SearchProvider extends ChangeNotifier {
   int get selectRatingValue => _selectRatingValue;
   set selectRatingValue(int value) {
     _selectRatingValue = value;
+    notifyListeners();
+  }
+
+  // Stores the selected SortBy Value
+  int _selectedSortBy = -1;
+  int get selectedSortBy => _selectedSortBy;
+  set selectedSortBy(int value) {
+    _selectedSortBy = value;
     notifyListeners();
   }
 
@@ -223,6 +231,8 @@ class SearchProvider extends ChangeNotifier {
 
     // Prepare API parameters based on filters and search input
     Map<String, dynamic> params = {'q': searchTextController.text};
+
+    selectedSortBy >= 0 ? params.addAll({'sortBy': sortByApiValue[selectedSortBy]}) : null;
     if (selectedBrandList.isNotEmpty) {
       // Add selected brands to the parameters after formatting
       params.addAll({'brands': selectedBrandList.map((e) => e.name).toList().join(",").replaceAll(" ", '-').toLowerCase()});
@@ -322,6 +332,7 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners(); // Notify UI listeners of data changes
   }
 
+  List<BrandElement> searchInstrumentsListForFutureUse = [];
   sortFilterAtoZ() {
     if (searchInstrumentsList.isEmpty) {
       if (searchCardData.isLeft) {
@@ -331,6 +342,7 @@ class SearchProvider extends ChangeNotifier {
         }
       }
     } else {
+      searchInstrumentsListForFutureUse = List.from(searchInstrumentsList);
       searchInstrumentsList.sort((a, b) => a.name!.compareTo(b.name!));
       notifyListeners();
     }
@@ -345,7 +357,8 @@ class SearchProvider extends ChangeNotifier {
         }
       }
     } else {
-      searchInstrumentsList = List.from(allBrandsList);
+      searchInstrumentsListForFutureUse = List.from(searchInstrumentsList);
+      searchInstrumentsList = searchInstrumentsListForFutureUse;
       notifyListeners();
     }
   }
@@ -370,7 +383,7 @@ class SearchProvider extends ChangeNotifier {
       searchInstrumentsList.clear();
 
       searchInstrumentsList = searchCardData.left.data!.brands!.where((val) {
-        return val.name!.contains(searchKeyword);
+        return val.name!.toLowerCase().contains(searchKeyword.toLowerCase());
       }).toList();
     }
     notifyListeners(); // Notify listeners of the updated search list
@@ -379,6 +392,7 @@ class SearchProvider extends ChangeNotifier {
   // Clear all applied filters
   clearAllFilter() {
     selectRatingValue = -1;
+    selectedSortBy = -1;
     selectedBrandList = [];
     selectedAttributes.clear();
     selectedValues.clear();
@@ -389,11 +403,15 @@ class SearchProvider extends ChangeNotifier {
 // Clear all search-related data
   reSetDataForSearchScreen() {
     clearAllFilter(); // Clear filters
-    filterSelctionName == 'rating';
+    filterSelctionName == 'sortBy';
     isVisibleLoadingIndicator = false;
     searchValue = '';
     searchCardData = Right(NoDataFoundException());
     searchTextController.clear(); // Clear search input
     notifyListeners(); // Notify listeners to update UI
   }
+
+// Sort By Data
+  List<String> sortByList = ['Relevance', 'Best Selling', 'Top Rated', 'Price: Low to High', 'Price: High to Low', 'New'];
+  List<String> sortByApiValue = ['relevance', 'best-selling', 'top-rated', 'price-asc', 'price-desc', 'new'];
 }
