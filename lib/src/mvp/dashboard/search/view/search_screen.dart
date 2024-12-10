@@ -118,30 +118,158 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
                                   searchController: searchProvider.searchTextController,
                                 ),
                               ),
-                              const SizedBox(width: 5),
-                              // Filter Button
-                              GestureDetector(
-                                  onTap: () {
-                                    if (searchProvider.searchTextController.text.length >= 2) {
-                                      if (Core.isKeyboardOpen(context)) {
-                                        Core.hideKeyBoard();
-                                      }
-                                      showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        context: context,
-                                        builder: (builder) {
-                                          return const FilterBottomSheetWidget();
-                                        },
-                                      );
-                                    }
-                                  },
-                                  child: Icon(Icons.filter_list_rounded,
-                                      color: searchProvider.searchTextController.text.length >= 2 ? VariableUtilities.theme.whiteColor : VariableUtilities.theme.whiteColor.withOpacity(0.6),
-                                      size: 25)),
                             ],
                           ),
                         ),
                         SizedBox(height: 24.h),
+                        (searchProvider.searchCardData.isLeft)
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        'Search Results',
+                                        style: FontUtilities.h14(fontColor: Colors.black, fontWeight: FWT.bold),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: RichText(
+                                        text: TextSpan(text: '${searchProvider.searchCardData.left.data!.products?.length} Result for ', style: FontUtilities.h10(fontColor: Colors.grey), children: [
+                                          TextSpan(
+                                            text: '''"${searchProvider.searchTextController.text}"''',
+                                            style: FontUtilities.h10(fontColor: Colors.black, fontWeight: FWT.semiBold),
+                                          ),
+                                        ]),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    // Filter Button
+                                    searchProvider.searchTextController.text.isEmpty
+                                        ? const SizedBox()
+                                        : SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    if (searchProvider.searchTextController.text.length >= 2) {
+                                                      if (Core.isKeyboardOpen(context)) {
+                                                        Core.hideKeyBoard();
+                                                      }
+                                                      showModalBottomSheet(
+                                                        context: context,
+                                                        builder: (builder) {
+                                                          return const FilterBottomSheetWidget();
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                  child: const CircleAvatar(backgroundColor: Colors.black, child: Icon(Icons.filter_list_rounded, color: Colors.white, size: 25)),
+                                                ),
+                                                const SizedBox(width: 5),
+                                                InputChip(
+                                                  label: Text('SortBy', style: FontUtilities.h10()),
+                                                  deleteIcon: const Icon(Icons.arrow_drop_down_rounded),
+                                                  onPressed: () {
+                                                    searchProvider.filterSelctionName = 'sortBy';
+                                                    showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (builder) {
+                                                        return const FilterBottomSheetWidget();
+                                                      },
+                                                    );
+                                                  },
+                                                  onDeleted: () {},
+                                                ),
+                                                const SizedBox(width: 5),
+                                                InputChip(
+                                                  label: Text('Rating', style: FontUtilities.h10()),
+                                                  deleteIcon: const Icon(Icons.arrow_drop_down_rounded),
+                                                  onPressed: () {
+                                                    searchProvider.filterSelctionName = 'rating';
+                                                    showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (builder) {
+                                                        return const FilterBottomSheetWidget();
+                                                      },
+                                                    );
+                                                  },
+                                                  onDeleted: () {},
+                                                ),
+                                                const SizedBox(width: 5),
+                                                InputChip(
+                                                  label: Text('Brand', style: FontUtilities.h10()),
+                                                  deleteIcon: const Icon(Icons.arrow_drop_down_rounded),
+                                                  onPressed: () {
+                                                    searchProvider.filterSelctionName = 'brand';
+                                                    showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (builder) {
+                                                        return const FilterBottomSheetWidget();
+                                                      },
+                                                    );
+                                                  },
+                                                  onDeleted: () {},
+                                                ),
+                                                const SizedBox(width: 5),
+                                                InputChip(
+                                                  label: Text('Price Range', style: FontUtilities.h10()),
+                                                  deleteIcon: const Icon(Icons.arrow_drop_down_rounded),
+                                                  onPressed: () {
+                                                    searchProvider.filterSelctionName = 'price_range';
+                                                    showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (builder) {
+                                                        return const FilterBottomSheetWidget();
+                                                      },
+                                                    );
+                                                  },
+                                                  onDeleted: () {},
+                                                ),
+                                                const SizedBox(width: 5),
+                                                SizedBox(
+                                                  width: 450,
+                                                  height: 30,
+                                                  child: ListView.builder(
+                                                    scrollDirection: Axis.horizontal,
+                                                    shrinkWrap: true,
+                                                    itemCount: searchProvider.searchCardData.left.data!.attributes?.length,
+                                                    physics: const NeverScrollableScrollPhysics(),
+                                                    itemBuilder: (context, index) {
+                                                      return Padding(
+                                                        padding: const EdgeInsets.only(left: 8),
+                                                        child: InputChip(
+                                                          label: Text(searchProvider.searchCardData.left.data!.attributes![index].title ?? '', style: FontUtilities.h10()),
+                                                          deleteIcon: const Icon(Icons.arrow_drop_down_rounded),
+                                                          onPressed: () {
+                                                            searchProvider.filterSelctionName = searchProvider.searchCardData.left.data!.attributes![index].code ?? '';
+                                                            showModalBottomSheet(
+                                                              context: context,
+                                                              builder: (builder) {
+                                                                return const FilterBottomSheetWidget();
+                                                              },
+                                                            );
+                                                          },
+                                                          onDeleted: () {},
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+
+                        /////////
                         searchProvider.searchTextController.text.isEmpty
                             ? Column(
                                 children: [
