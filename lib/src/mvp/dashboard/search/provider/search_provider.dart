@@ -332,7 +332,8 @@ class SearchProvider extends ChangeNotifier {
     notifyListeners(); // Notify UI listeners of data changes
   }
 
-  List<BrandElement> searchInstrumentsListForFutureUse = [];
+  List<BrandElement> searchInstrumentsListForFutureUseByRelevance = [];
+
   sortFilterAtoZ() {
     if (searchInstrumentsList.isEmpty) {
       if (searchCardData.isLeft) {
@@ -342,7 +343,6 @@ class SearchProvider extends ChangeNotifier {
         }
       }
     } else {
-      searchInstrumentsListForFutureUse = List.from(searchInstrumentsList);
       searchInstrumentsList.sort((a, b) => a.name!.compareTo(b.name!));
       notifyListeners();
     }
@@ -357,8 +357,7 @@ class SearchProvider extends ChangeNotifier {
         }
       }
     } else {
-      searchInstrumentsListForFutureUse = List.from(searchInstrumentsList);
-      searchInstrumentsList = searchInstrumentsListForFutureUse;
+      searchInstrumentsList = List.from(searchInstrumentsListForFutureUseByRelevance);
       notifyListeners();
     }
   }
@@ -385,8 +384,18 @@ class SearchProvider extends ChangeNotifier {
       searchInstrumentsList = searchCardData.left.data!.brands!.where((val) {
         return val.name!.toLowerCase().contains(searchKeyword.toLowerCase());
       }).toList();
+
+      searchInstrumentsListForFutureUseByRelevance = searchCardData.left.data!.brands!.where((val) {
+        return val.name!.toLowerCase().contains(searchKeyword.toLowerCase());
+      }).toList();
     }
     notifyListeners(); // Notify listeners of the updated search list
+  }
+
+  clearOnSearchInputField() {
+    brandSearchTextController.clear();
+    searchInstrumentsList.clear();
+    searchInstrumentsListForFutureUseByRelevance.clear();
   }
 
   // Clear all applied filters

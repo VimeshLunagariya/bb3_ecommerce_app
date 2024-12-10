@@ -203,8 +203,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                                     // Clear search results and input if the text is empty
                                                     if (text.isEmpty) {
                                                       FocusScope.of(context).unfocus();
-                                                      searchProvider.brandSearchTextController.clear();
-                                                      searchProvider.searchInstrumentsList.clear();
+                                                      searchProvider.clearOnSearchInputField();
                                                     }
                                                   },
                                                   // Show a cancel icon to clear the input field if text is present
@@ -398,38 +397,6 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                                                       ),
                                                     ),
                                                   )
-
-                                                // ListView.builder(
-                                                //     itemCount: searchProvider.searchCardData.left.data!.attributes?[index].values!.length,
-                                                //     shrinkWrap: true,
-                                                //     physics: const NeverScrollableScrollPhysics(),
-                                                //     itemBuilder: (context, insideIndex) {
-                                                //       return Row(
-                                                //         children: [
-                                                //           Checkbox(
-                                                //             activeColor: VariableUtilities.theme.blackColor,
-                                                //             value: searchProvider.selectedValues.contains(searchProvider.searchCardData.left.data!.attributes![index].values![insideIndex]),
-                                                //             onChanged: (val) {
-                                                //               // Handles changes in attribute selection
-                                                //               searchProvider.onAttributesChanges(
-                                                //                 searchProvider.searchCardData.left.data!.attributes![index],
-                                                //                 searchProvider.searchCardData.left.data!.attributes![index].values![insideIndex],
-                                                //               );
-                                                //             },
-                                                //           ),
-                                                //           // Displays attribute value and product count
-                                                //           Expanded(
-                                                //             child: Text(
-                                                //               "${searchProvider.searchCardData.left.data!.attributes![index].values![insideIndex].value} (${searchProvider.searchCardData.left.data!.attributes![index].values![insideIndex].productCount})",
-                                                //               overflow: TextOverflow.ellipsis,
-                                                //               maxLines: 2,
-                                                //               style: FontUtilities.h12(fontFamily: 'Open Sans'),
-                                                //             ),
-                                                //           ),
-                                                //         ],
-                                                //       );
-                                                //     },
-                                                //   )
                                                 : const SizedBox();
                                           },
                                         )
